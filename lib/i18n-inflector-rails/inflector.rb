@@ -151,15 +151,6 @@ module I18n
         # @raise [I18n::Inflector::Rails::BadInflectionMethod] when the given name or value are malformed
         # @param [Hash{Symbol => Symbol},Array<Symbol>,Symbol,String] *args the methods and inflection kinds assigned to them
         # @return [void]
-        def ruby2_keywords(*methods)
-          return if RUBY_VERSION >= "3.0"
-          methods.each do |method|
-            method = instance_method(method) rescue next
-            method.ruby2_keywords if method.respond_to?(:ruby2_keywords)
-          end
-        end
-
-        ruby2_keywords :inflection_method if RUBY_VERSION < "3.0"
 
         def inflection_method(*args, **kwargs)
           args = args.flatten
