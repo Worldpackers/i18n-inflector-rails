@@ -3,7 +3,7 @@
 # Author::    Paweł Wilk (mailto:pw@gnu.org)
 # Copyright:: (c) 2011-2023 by by Paweł Wilk
 # License::   This program is licensed under the terms of {file:LGPL-LICENSE GNU Lesser General Public License} or {file:COPYING Ruby License}.
-# 
+#
 # This file contains I18n::Backend::Inflector::Rails module,
 # which extends ActionView::Helpers::TranslationHelper
 # by adding the ability to interpolate patterns containing
@@ -38,7 +38,7 @@ module I18n
         # assignments that were defined earlier in the inheritance path and
         # merges them with current results; the most current entries will
         # override the entries defined before.
-        # 
+        #
         # @api public
         # @return [Hash] the Hash containing assignments made by using {#inflection_method}
         def i18n_inflector_kinds
@@ -53,17 +53,17 @@ module I18n
         # passed as inflection options along with assigned kinds. If the kind is not
         # given then method assumes that the name of a kind is the same as the given
         # name of a method.
-        # 
+        #
         # If the given kind begins with +@+ then strict kind is assumed. If there is
         # no kind given but the given method name begins with +@+ character then
         # also strict kind of the same name is assumed but method name is memorized
         # without the leading symbol.
-        # 
+        #
         # Registering method for feeding an inflection option describing a strict
         # kind might be good idea when using some regular kind of the same name,
         # but note that regular kind inflection option is also tried by the
         # translation method when strict kind is in use.
-        # 
+        #
         # In case of registering two methods of different
         # names but assigned to kind and to a strict kind using the same base name,
         # a named inflection pattern will first use an inflection option obtained
@@ -71,43 +71,43 @@ module I18n
         # to use short formed +inflection_method+ calls to register a method for both
         # strict and regular inflection kind, since the method names will be the
         # same and the second call will overwrite the first one.
-        # 
+        #
         # @example Registering an inflection method for the kind gender visible in a whole application
         #   class ApplicationController < ActionController::Base
         #     inflection_method :gender
         #     […]
         #   end
-        # 
+        #
         # @example Registering an inflection method for the strict kind @gender visible in a whole application
         #   class ApplicationController < ActionController::Base
         #     inflection_method :@gender
         #     […]
         #   end
-        # 
+        #
         # @example Registering a custom-named inflection method for the kind gender
         #   class ApplicationController < ActionController::Base
         #     inflection_method :get_user_gender => :gender
         #     […]
         #   end
-        # 
+        #
         # @example Registering a custom-named inflection methods for the kinds gender and tense
         #   class ApplicationController < ActionController::Base
         #     inflection_method :get_user_gender => :gender, :get_tense => :tense
         #     […]
         #   end
-        # 
+        #
         # @example Registering inflection methods for the kinds gender and tense
         #   class ApplicationController < ActionController::Base
         #     inflection_method :gender, :tense
         #     […]
         #   end
-        # 
+        #
         # @example Registering inflection methods for the kind gender and the strict kind @tense
         #   class ApplicationController < ActionController::Base
         #     inflection_method :gender, :@tense
         #     […]
         #   end
-        # 
+        #
         # @example Registering a custom-named inflection methods for the kinds gender and @gender
         #   # in case of named patterns the method get_strict_gender and the
         #   # strict kind @gender will have priority; the regular kind gender
@@ -116,42 +116,52 @@ module I18n
         #     inflection_method :get_gender => :gender, :get_strict_gender => :@gender
         #     […]
         #   end
-        # 
+        #
         # @example Registering a method for the kind gender and the custom-named method for the kind @gender
         #   class ApplicationController < ActionController::Base
         #     inflection_method :gender, :get_strict_gender => :@gender
         #     […]
         #   end
-        # 
+        #
         # @example Registering a method for the kind gender visible in whole app and a variant for some controller
         #   class ApplicationController < ActionController::Base
         #     inflection_method :gender
         #     […]
         #   end
-        #   
+        #
         #   # In this controller the method gender will be called
         #   # to obtain inflection option's value for the kind gender
         #   class UsersController < ApplicationController
         #   end
-        #   
+        #
         #   # In this controller the method getit will be called
         #   # to obtain inflection option's value for the kind gender
         #   class OtherController < ApplicationController
         #     inflection_method :getit => :gender
         #   end
-        #   
+        #
         #   # In this controller no method will be called
         #   # to obtain inflection option's value for the kind gender
         #   class FlowersController < ApplicationController
         #     no_inflection_method :getit
         #   end
-        # 
+        #
         # @api public
         # @note Any added method will become a helper unless {I18n::Inflector::InflectionOptions#auto_helper} swtich is set to +false+!
         # @raise [I18n::Inflector::Rails::BadInflectionMethod] when the given name or value are malformed
         # @param [Hash{Symbol => Symbol},Array<Symbol>,Symbol,String] *args the methods and inflection kinds assigned to them
         # @return [void]
-        def inflection_method(*args)
+        def ruby2_keywords(*methods)
+          return if RUBY_VERSION >= "3.0"
+          methods.each do |method|
+            method = instance_method(method) rescue next
+            method.ruby2_keywords if method.respond_to?(:ruby2_keywords)
+          end
+        end
+
+        ruby2_keywords :inflection_method if RUBY_VERSION < "3.0"
+
+        def inflection_method(*args, **kwargs)
           args = args.flatten
           if args.empty?
             raise I18n::Inflector::Rails::BadInflectionMethod.new(assignment)
@@ -190,7 +200,7 @@ module I18n
         # when there is a need to break inheritance in some controller,
         # but there was a method assigned to some inflection kind in
         # a parrent class.
-        # 
+        #
         # @api public
         # @raise [I18n::Inflector::Rails::BadInflectionMethod] when name or value is bad or malformed
         # @param [Array<Symbol>] names the method names for which the assigned kinds should be marked as not
@@ -224,7 +234,7 @@ module I18n
         # when there is a need to break inheritance in some controller,
         # but there was a method assigned to some inflection kind in
         # a parrent class.
-        # 
+        #
         # @api public
         # @raise [I18n::Inflector::Rails::BadInflectionMethod] when name or value is malformed
         # @param [String,Symbol,Array<Symbol>] kinds the kind for which the method names should be marked
@@ -265,12 +275,12 @@ module I18n
         # That data contains inflection pairs (<tt>kind => value</tt>) that will
         # be passed to the interpolation method from {I18n::Inflector} through
         # {ActionView::Helpers::TranslationHelper#translate}.
-        # 
+        #
         # You may also pass inflection options directly, along with other options,
         # without registering methods responsible for delivering tokens.
         # See {I18n Inflector documentation}[http://rubydoc.info/gems/i18n-inflector]
         # for more info about inflection options.
-        # 
+        #
         # @api public
         # @raise {I18n::InvalidInflectionKind}
         # @raise {I18n::InvalidInflectionOption}
@@ -319,7 +329,7 @@ module I18n
         protected
 
         # This method tries to read +i18n_inflector_kinds+ available in the current context.
-        # 
+        #
         # @return [Hash] the inflection options (<tt>kind => value</tt>)
         def t_prepare_inflection_options(inflector, locale, options)
           subopts = {}
