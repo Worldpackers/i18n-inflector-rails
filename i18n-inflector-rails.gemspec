@@ -32,8 +32,8 @@ Gem::Specification.new do |s|
   s.specification_version = 3
 
   s.add_dependency 'i18n-inflector',          '~> 2.6'
-  s.add_dependency 'railties',                '~> 3.0', '>= 3.0.0'
-  s.add_dependency 'actionpack',              '~> 3.0', '>= 3.0.0'
+  s.add_dependency 'railties',                '>= 6.1.3.2'
+  s.add_dependency 'actionpack',              '>= 6.1.3.2'
   s.add_development_dependency 'rspec',       '~> 2.6', '>= 2.6.0'
   s.add_development_dependency 'yard',        '~> 0.7', '>= 0.7.2'
   s.add_development_dependency 'bundler',     '~> 2.3', '>= 2.3.0'
