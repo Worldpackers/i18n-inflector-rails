@@ -5,8 +5,8 @@
 source "https://rubygems.org/"
 
 gem "i18n-inflector", "~>2.6"
-gem "railties", ">=3.0.0"
-gem "actionpack", ">=3.0.0"
+gem "railties", ">=6.1.3.2"
+gem "actionpack", ">=6.1.3.2"
 
 gem "hoe-yard", ">=0.1.3", :group => [:development, :test]
 gem "rspec", ">=2.6.0", :group => [:development, :test]
